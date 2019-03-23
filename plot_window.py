@@ -3,7 +3,6 @@
 from tkinter import Tk, Label, Button, Canvas
 
 
-
 class DataPlot:
     """A canvas for displaying the algorithm's progress"""
     def __init__(self, master):
@@ -42,9 +41,21 @@ class TestPoint:  # Only for testing
         self.y = y
         self.color = color
 
-root = Tk()
-plotter = DataPlot(root)
-test_pts = [TestPoint(50, 50, 'green'), TestPoint(550, 550, 'red')]
-for test_pt in test_pts:
-    plotter.plot(test_pt)
-root.mainloop()
+
+def example_use():
+    root = Tk()
+    plotter = DataPlot(root)
+    test_pts = [
+        TestPoint(50, 50, 'green'), TestPoint(550, 550, 'red'), # Coloured
+        TestPoint(300, 300, None), TestPoint(304, 300, None),  # Overlapping.
+        TestPoint(600, 600, 'blue'), TestPoint(0, 0, 'blue'),  # Limit of range.
+        TestPoint(700, 700, 'red'), TestPoint(100, -2 , 'red'),  # Out of range.
+        TestPoint(200.5342, 6.534200, 'black')  # Non-integer.
+        ]
+    for test_pt in test_pts:
+        plotter.plot(test_pt)
+    root.mainloop()
+
+
+if __name__ == '__main__':
+    example_use()
