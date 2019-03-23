@@ -16,7 +16,6 @@ class Perceptron:
         return points
 
 
-
 root = Tk()
 plotter = DataPlot(root)
 
