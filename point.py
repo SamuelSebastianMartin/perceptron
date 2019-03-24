@@ -4,6 +4,11 @@ from random import random
 
 
 class Point:
+    """A 'Point' object can be drawn on the tkinter canvas.
+    Points instantiate themselves with random co-ordinates,
+    and also hold the correct 'value', which the perceptron
+    will guess at.
+    """
     def __init__(self):
         x_range=600
         y_range=600
