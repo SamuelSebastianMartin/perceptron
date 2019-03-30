@@ -19,18 +19,16 @@ class Perceptron:
         'value' (1 or -1) is not available until training.
         """
         points = []
-        for n in range(200):
+        for n in range(6):
             pt = Point()
             points.append(pt)
         return points
 
     def randomise_weight(self):
         """A one-time function to set random initial values"""
-        wt = random()
-        if wt > 0.5:
-            return 1
-        else:
-            return -1
+        rnd = random()
+        weight = (rnd - 0.5) * 2  # (-1, 1]
+        return weight
 
     def guess(self, x, y):
         """The perceptron makes an 'educated' guess for 'value'
@@ -46,19 +44,17 @@ class Perceptron:
     def train(self):
         learn_rate = 0.1
         for pt in self.points:
-#            time.sleep(0.5)
             guess = self.guess(pt.x, pt.y)
             error = pt.value - guess
-            if guess == pt.value:
+            if error == 0:
+                print('green', pt.value, guess)
                 pt.color = 'green'
             else:
                 pt.color = 'red'
-            plotter.plot(pt)
-            #  'teach' weights.
-            self.wt_x = self.wt_x * error * learn_rate
-            self.wt_y = self.wt_y * error * learn_rate
+                print('red', pt.value, guess)
 
-
+                self.wt_x = self.wt_x - (error * learn_rate * pt.x)
+                self.wt_y = self.wt_y - (error * learn_rate * pt.y)
 
 root = Tk()
 plotter = DataPlot(root)
@@ -66,12 +62,18 @@ plotter = DataPlot(root)
 
 def main():
     pcn = Perceptron()
-    points = pcn.make_points()
-    for pt in points:
+    print([pt.x for pt in pcn.points])  #
+    for pt in pcn.points:
         plotter.plot(pt)
-    for n in range(10):
-        input('click to continue')
+
+    print()
+    for n in range(2):
+        wait_null = input('click to contiue')
         pcn.train()
+        print([pt.color for pt in pcn.points], pcn.wt_x, pcn.wt_y)
+        for pt in pcn.points:
+            plotter.plot(pt)
+#        print(pcn.wt_x, pcn.wt_y)
 main()
 
 root.mainloop()
