@@ -37,7 +37,7 @@ class Perceptron:
         else:
             return 1
 
-    def train(self):
+    def train(self):  # Note in theory, w = w + rate * (ans - guess) * x
         self.w = self.learn_rate * (self.ans - self.get_guess()) + self.w
 
 
