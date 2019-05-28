@@ -19,23 +19,26 @@ from random import random
 
 
 class Perceptron:
+    """
+    This Perceptron trains on paired data (x, ans), showing a random 
+    variable, X, and the know answer to that variable, 'ans'.
+    After training, the get_guess method will yeild a guessed answer
+    for any imput value of x.
+    """
     def __init__(self):
-        print('in __init__\n')
         self.x = 0    # Raw imput.
         self.ans = 0  # Obtained from training data.
         self.w = 0    # Weight.
-        self.learn_rate = 0.01
-        self.guess = self.get_guess()
+        self.learn_rate = 0.1
 
     def get_guess(self):
-        if self.x * self.w < 1:
+        if (self.x * self.w) < 1:
             return 0
         else:
             return 1
 
     def train(self):
         self.w = self.learn_rate * (self.ans - self.get_guess()) + self.w
-        print(self.x, self.guess)
 
 
 def main():
@@ -56,7 +59,7 @@ def get_threshold():
 
 def get_training_data(threshold):
     data = []
-    for i in range(2000):
+    for i in range(200000):
         x = random()*10
         if x >= threshold:
             ans = 1
@@ -64,6 +67,7 @@ def get_training_data(threshold):
             ans = 0
         data.append((x, ans))
     return data
+
 
 def train_perceptron(P, trainin_data):
     for datum in trainin_data:
@@ -76,11 +80,10 @@ def test_perceptron_interactive(P):
     for n in range(5):
         trial = float(input("\nGive the perceptron a grade to assess:  "))
         P.x = trial
-        if P.guess == 1:
+        if P.get_guess() == 1:
             print("PASS")
         else:
             print("FAIL")
-
 
 
 if __name__ == '__main__':
