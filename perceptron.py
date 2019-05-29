@@ -9,14 +9,21 @@ from perceptron_class import Perceptron
 
 
 def main():
-    df = generate_data()
+    # Get learning data for training purposes
+    learning_df = generate_data()
     m, c = get_line()  # y = mx + c
-    df = add_label_column(df, m, c)
+    learning_df = add_label_column(learning_df, m, c)
 
+    # Create and train perceptron
     p = Perceptron()
-    p.df = df
+    p.df = learning_df
     p.train()
-    plot_data(df, m, c)
+
+
+    # Get new data for testing purposes
+    test_df = generate_data()
+    test_df = add_label_column(learning_df, m, c)  # only to highligh errors.
+    plot_data(learning_df, m, c)  # change to df (not learning)
 
 
 def generate_data():
@@ -63,7 +70,7 @@ def plot_data(df, m, c):
         if label == 1:
             plt.plot(x, y, 'ro')
         else:
-            plt.plot(x, y, 'go')
+            plt.plot(x, y, 'rs')
 
     # plot line: ([pt1_x, pt2_x], [pt1_y, pt2_y])
     plt.plot([0, 100], [c + (m * 0), c + (m * 100)], 'k-')
