@@ -5,11 +5,17 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+from perceptron_class import Perceptron
+
 
 def main():
     df = generate_data()
     m, c = get_line()  # y = mx + c
-    df = add_expected_column(df, m, c)
+    df = add_label_column(df, m, c)
+
+    p = Perceptron()
+    p.df = df
+    p.train()
     plot_data(df, m, c)
 
 
@@ -18,7 +24,7 @@ def generate_data():
     Generates random points in a 2D plane, returning a pandas dataframe.
     """
     df = pd.DataFrame(np.random.randint(0,100,size=(100, 2))
-                    , columns=list('xy'))
+                    , columns=['x1', 'x2'])
     return df
 
 
@@ -32,19 +38,19 @@ def get_line():
     return m, c
 
 
-def add_expected_column(df, m, c):
+def add_label_column(df, m, c):
     """Adds a column with the expected answer (1 or 0).
     """
-    expected = []
+    label = []
 
     for index, row in df.iterrows():
-        x = (row['x'])
-        y = (row['y'])
+        x = (row['x1'])
+        y = (row['x2'])
         if y >= m * x + c:
-            expected.append(1)
+            label.append(1)
         else:
-            expected.append(0)
-    df['expected'] = expected
+            label.append(0)
+    df['label'] = label
     return df
 
 
@@ -53,8 +59,8 @@ def plot_data(df, m, c):
     Plots all the data points and the dividing line.
     """
     # plot points
-    for x, y, expected in df.itertuples(index=False):  # itertuples method.
-        if expected == 1:
+    for x, y, label in df.itertuples(index=False):  # itertuples method.
+        if label == 1:
             plt.plot(x, y, 'ro')
         else:
             plt.plot(x, y, 'go')
