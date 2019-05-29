@@ -1,5 +1,4 @@
 #! /usr/bin/env python3
-
 from random import random
 import matplotlib.pyplot as plt
 import numpy as np
@@ -9,29 +8,34 @@ from perceptron_class import Perceptron
 
 
 def main():
-    # Get learning data for training purposes
-    learning_df = generate_data()
+    # Get line to calculate label (the line that will be guessed).
     m, c = get_line()  # y = mx + c
+
+    # Get learning data            | x1 | x2 | label |
+    learning_df = generate_data()
     learning_df = add_label_column(learning_df, m, c)
 
     # Create and train perceptron
     p = Perceptron()
-    p.df = learning_df
-    p.train()
+    train_perceptron(p, learning_df)
 
-
-    # Get new data for testing purposes
+    # Get new data for testing     | x1 | x2 | label |
     test_df = generate_data()
-    test_df = add_label_column(learning_df, m, c)  # only to highligh errors.
-    plot_data(learning_df, m, c)  # change to df (not learning)
+    test_df = add_label_column(test_df, m, c)  # to find error
+
+    # Test the perceptron on the new data
+    test_df = add_guess_colunm(test_df, p)
+
+    # plot results
+    plot_data(test_df, m, c)  # change to df (not learning)
 
 
 def generate_data():
     """
     Generates random points in a 2D plane, returning a pandas dataframe.
     """
-    df = pd.DataFrame(np.random.randint(0,100,size=(100, 2))
-                    , columns=['x1', 'x2'])
+    df = pd.DataFrame(np.random.randint(0, 100, size=(9000, 2)),
+                      columns=['x1', 'x2'])
     return df
 
 
@@ -61,15 +65,39 @@ def add_label_column(df, m, c):
     return df
 
 
+def train_perceptron(p, test_df):
+    for x1, x2, label in test_df.itertuples(index=False):
+        p.x1 = x1
+        p.x2 = x2
+        p.label = label
+        p.update_weights()
+
+
+def add_guess_colunm(df, p):
+    guesses = []
+    for x1, x2, label in df.itertuples(index=False):
+        p.x1 = x1
+        p.x2 = x2
+        p.label = label
+        guess = p.predict()
+        guesses.append(guess)
+    df['guess'] = guesses
+    return df
+
+
 def plot_data(df, m, c):
     """
     Plots all the data points and the dividing line.
     """
     # plot points
-    for x, y, label in df.itertuples(index=False):  # itertuples method.
-        if label == 1:
-            plt.plot(x, y, 'ro')
-        else:
+    for x, y, label, guess in df.itertuples(index=False):  # itertuples method.
+        if label == 1 and guess == 1:  # good
+            plt.plot(x, y, 'go')
+        elif label == 1 and guess == 0: # bad
+            plt.plot(x, y, 'rs')
+        elif label == 0 and guess == 0: # good
+            plt.plot(x, y, 'gs')
+        elif label == 0 and guess == 1: # bad
             plt.plot(x, y, 'rs')
 
     # plot line: ([pt1_x, pt2_x], [pt1_y, pt2_y])
